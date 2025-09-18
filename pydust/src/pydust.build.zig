@@ -305,10 +305,14 @@ pub const PydustStep = struct {
 };
 
 fn getLibpython(allocator: std.mem.Allocator, python_exe: []const u8) ![]const u8 {
+    const getLdVersion = if (builtin.os.tag == .windows)
+        "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}', end='')"
+    else
+        "import sysconfig; print(sysconfig.get_config_var('LDVERSION'), end='')";
     const ldlibrary = try getPythonOutput(
         allocator,
         python_exe,
-        "import sysconfig; print(sysconfig.get_config_var('LDLIBRARY'), end='')",
+        getLdVersion,
     );
 
     var libname = ldlibrary;

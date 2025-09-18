@@ -37,7 +37,7 @@ PYLDLIB = os.path.splitext(PYLDLIB)[0]
 def zig_build(argv: list[str], conf: config.ToolPydust | None = None):
     conf = conf or config.load()
 
-    # Always generate the supporting pydist.build.zig
+    # Always generate the supporting pydust.build.zig
     shutil.copy(
         Path(pydust.__file__).parent.joinpath("src/pydust.build.zig"),
         conf.pydust_build_zig,
