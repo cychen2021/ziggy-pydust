@@ -132,9 +132,13 @@ fn getPythonLibraryPath(python_exe: []const u8, allocator: std.mem.Allocator) ![
 }
 
 fn getPythonLDVersion(python_exe: []const u8, allocator: std.mem.Allocator) ![]const u8 {
+    const getLdVersion = if (builtin.os.tag == .windows)
+        "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}', end='')"
+    else
+        "import sysconfig; print(sysconfig.get_config_var('LDVERSION'), end='')";
     const includeResult = try runProcess(.{
         .allocator = allocator,
-        .argv = &.{ python_exe, "-c", "import sysconfig; print(sysconfig.get_config_var('LDVERSION'), end='')" },
+        .argv = &.{ python_exe, "-c", getLdVersion },
     });
     defer allocator.free(includeResult.stderr);
     return includeResult.stdout;

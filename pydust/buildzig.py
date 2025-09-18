@@ -95,7 +95,7 @@ def generate_build_zig(fileobj: TextIO, conf=None):
                 f"""
                 _ = pydust.addPythonModule(.{{
                     .name = "{ext_module.name}",
-                    .root_source_file = b.path("{ext_module.root}"),
+                    .root_source_file = b.path("{ext_module.root.as_posix()}"),
                     .limited_api = {str(ext_module.limited_api).lower()},
                     .target = target,
                     .optimize = optimize,
