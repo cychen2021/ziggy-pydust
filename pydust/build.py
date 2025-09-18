@@ -12,11 +12,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from pathlib import Path
 import sys
 
 from pydust import buildzig
+import subprocess
 
 
 def build():
     """The main entry point from Poetry's build script."""
     buildzig.zig_build(["install", f"-Dpython-exe={sys.executable}", "-Doptimize=ReleaseSafe"])
+
+def build_uv():
+    """The main entry point from Poetry's build script."""
+
+    subprocess.run(["uv", "sync", "--no-install-projects"], check=True, capture_output=True, text=True)
+    output = subprocess.run(["uv", "python", "find"], check=True, capture_output=True, text=True)
+    python_exe = Path(output.stdout.strip()).as_posix()
+    buildzig.zig_build(["install", f"-Dpython-exe={python_exe}", "-Doptimize=ReleaseSafe"])
