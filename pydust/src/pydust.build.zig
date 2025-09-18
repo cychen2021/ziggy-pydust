@@ -107,7 +107,7 @@ pub const PydustStep = struct {
             .python_library_dir = "",
         };
         // Eagerly run path discovery to work around ZLS support.
-        self.python_include_dir = (if (builtin.os.tag == .windows)
+        self.python_include_dir = (if (builtin.os.tag != .windows)
             self.pythonOutput(
                 "import os, sysconfig; print(os.path.relpath(sysconfig.get_path('include')), end='')",
             )
@@ -115,7 +115,7 @@ pub const PydustStep = struct {
             self.pythonOutput(
                 "import os, sysconfig; print(os.path.realpath(sysconfig.get_path('include')), end='')",
             )) catch @panic("Failed to setup Python");
-        self.python_library_dir = (if (builtin.os.tag == .windows)
+        self.python_library_dir = (if (builtin.os.tag != .windows)
             self.pythonOutput(
                 "import os, sysconfig; print(os.path.relpath(sysconfig.get_config_var('LIBDIR')), end='')",
             )
@@ -123,7 +123,7 @@ pub const PydustStep = struct {
             self.pythonOutput(
                 "import os, sysconfig; print(os.path.realpath(sysconfig.get_config_var('LIBDIR')), end='')",
             )) catch @panic("Failed to setup Python");
-        self.pydust_source_file = (if (builtin.os.tag == .windows)
+        self.pydust_source_file = (if (builtin.os.tag != .windows)
             self.pythonOutput(
                 "import pydust; import os; print(os.path.relpath(os.path.join(os.path.dirname(pydust.__file__), 'src/pydust.zig')), end='')",
             )
