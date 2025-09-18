@@ -26,7 +26,10 @@ def build():
 def build_uv():
     """The main entry point from Poetry's build script."""
 
-    subprocess.run(["uv", "sync", "--no-install-projects"], check=True, capture_output=True, text=True)
+    sync_output = subprocess.run(["uv", "sync", "--no-install-projects"], check=False, capture_output=True, text=True)
+    if sync_output.returncode != 0:
+        print(f"Error running 'uv sync':\nstderr: {sync_output.stderr}\nstdout: {sync_output.stdout}", file=sys.stderr)
+        sys.exit(1)
     output = subprocess.run(["uv", "python", "find"], check=True, capture_output=True, text=True)
     python_exe = Path(output.stdout.strip()).as_posix()
     buildzig.zig_build(["install", f"-Dpython-exe={python_exe}", "-Doptimize=ReleaseSafe"])
