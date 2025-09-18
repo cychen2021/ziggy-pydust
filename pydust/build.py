@@ -26,7 +26,7 @@ def build():
 def build_uv():
     """The main entry point from Poetry's build script."""
 
-    sync_output = subprocess.run(["uv", "sync", "--no-install-projects"], check=False, capture_output=True, text=True)
+    sync_output = subprocess.run(["uv", "sync", "--no-install-project"], check=False, capture_output=True, text=True)
     if sync_output.returncode != 0:
         print(f"Error running 'uv sync':\nstderr: {sync_output.stderr}\nstdout: {sync_output.stdout}", file=sys.stderr)
         sys.exit(1)
